@@ -52,7 +52,7 @@ if(!file_exists($dirfile))
 							  mediaid, filename,filepath,type)".
 							  "values(NULL,'". urlencode($_FILES["file"]["name"])."','$dirfile','".$_FILES["file"]["type"]."')";
 					$queryresult = mysqli_query($con, $insert)
-						  or die("Insert into Media error in media_upload_process.php " .mysql_error($con));
+						  or die("Insert into Media error in media_upload_process.php " .mysqli_error($con));
 					$result="0";
 					
 					$mediaid = mysqli_insert_id($con);

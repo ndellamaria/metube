@@ -59,9 +59,66 @@ function upload_error($result)
 	}
 }
 
-function other()
+function addContact($username, $contactname)
 {
 	//You can write your own functions here.
+	global $con;
+
+	$query = "SELECT id FROM users WHERE username='$username'";
+	$result = mysqli_query($con, $query);
+	$row = mysqli_fetch_row($result);
+	$userid = $row[0];
+
+	// get id of contact username
+	$query = "SELECT * FROM users WHERE username='$contactname'";
+	$result = mysqli_query($con, $query );
+	if (!$result)
+	{
+	   die ("addContact() failed. Could not query the database: <br />". mysqli_error($con));
+	}
+	$row = mysqli_fetch_row($result);
+	if(!$row) 
+		return 1; // no user exists
+	$query = "SELECT id FROM users WHERE username='$contactname'";
+	$result = mysqli_query($con, $query);
+	$row = mysqli_fetch_row($result);
+	$contactid = $row[0];
+
+	$query = "SELECT * FROM user_contact WHERE userid='$userid' and contactid='$contactid'";
+	$result = mysqli_query($con, $query);
+	$row = mysqli_fetch_row($result);
+
+	if($row)
+		return 2; // already a contact
+
+	$query = "INSERT INTO user_contact(userid, contactid) VALUES ('$userid', '$contactid')";
+	$result = mysqli_query($con, $query);
+	if(!$result){
+		return 3;
+	}
+
+	$query = "INSERT INTO user_contact(userid, contactid) VALUES ('$contactid', '$userid')";
+	$result = mysqli_query($con, $query);
+	if($result){
+		return 0;
+	}
+	else {
+		return 3;
+	}
+}
+
+function getContacts($username){
+	$query = "SELECT id FROM users WHERE username='$username'";
+	$result = mysqli_query($con, $query);
+	$row = mysqli_fetch_row($result);
+	$userid = $row[0];
+
+	$query = "SELECT username, email FROM users INNER JOIN user_contact ON users.id = user_contact.contactid WHERE user_contact.userid='$userid'";
+	$result = mysqli_query($con, $query);
+	if(!$result){
+		return 3;
+	}
+	return $result;
 }
 	
 ?>

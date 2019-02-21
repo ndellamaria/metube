@@ -25,14 +25,35 @@ function saveDownload(id)
 
 <body>
 <p>Welcome <?php echo $_SESSION['username'];?></p>
-
 <?php 
 	if (! empty($_SESSION['logged_in']))
 	{
+		$username = $_SESSION['username'];
     	echo "<p>You can only see this text if you are logged in</p>
     	<a href='logout.php'>Click here to log out</a>";
 
     	echo "<p>Click <a href='update.php'>here</a> to update your profile information.</p>";
+
+    	echo "<h3>Contacts</h3>";
+		$query = "SELECT id FROM users WHERE username='$username'";
+		$result = mysqli_query($con, $query);
+		$row = mysqli_fetch_row($result);
+		$userid = $row[0];
+
+		$query = "SELECT username, email FROM users INNER JOIN user_contact ON users.id = user_contact.contactid WHERE user_contact.userid='$userid'";
+		$result = mysqli_query($con, $query);
+		if(!$result){
+			echo "fail";
+		}
+		else {
+			while ($row = mysqli_fetch_array($result, MYSQLI_NUM)) {
+    			echo "username: ".$row[0]."&nbsp; email: ".$row[1];
+    			echo "</br>";  
+			}
+		}
+
+
+    	echo "<p> Click <a href='add_contact.php'>here</a> to add a contact by username.</p>";
 	}
 	else
 	{

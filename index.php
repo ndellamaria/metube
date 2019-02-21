@@ -1,4 +1,6 @@
 <link rel="stylesheet" type="text/css" href="css/default.css" />
+<h1>Login</h1>
+
 <?php
 session_start();
 
