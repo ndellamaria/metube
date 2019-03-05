@@ -1,5 +1,6 @@
 <link rel="stylesheet" type="text/css" href="css/default.css" />
-<h1>Login</h1>
+<h1>Welcome to MeTube</h1>
+<h3>Please login or register to continue.</h3>
 
 <?php
 session_start();

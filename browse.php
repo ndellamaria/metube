@@ -24,7 +24,8 @@ function saveDownload(id)
 </head>
 
 <body>
-<p>Welcome <?php echo $_SESSION['username'];?></p>
+<h1>Homepage</h1>
+<p>Welcome <?php echo $_SESSION['username'];?>.</p>
 <?php 
 	if (! empty($_SESSION['logged_in']))
 	{
@@ -81,11 +82,11 @@ function saveDownload(id)
 	$result = mysqli_query($con, $query );
 	if (!$result)
 	{
-	   die ("Could not query the media table in the database: <br />". mysql_error($con));
+	   die ("Could not query the media table in the database: <br />". mysqli_error($con));
 	}
 ?>
     
-    <div style="background:#339900;color:#FFFFFF; width:150px;">Uploaded Media</div>
+    <div style="background:#339900;color:#FFFFFF; width:150px;">All Uploaded Media</div>
 	<table width="50%" cellpadding="0" cellspacing="0">
 		<?php
 			while ($result_row = mysqli_fetch_row($result))
@@ -104,10 +105,41 @@ function saveDownload(id)
             	<a href="<?php echo $result_row[2].$result_row[1];?>" target="_blank" onclick="javascript:saveDownload(<?php echo $result_row[0];?>);">Download</a>
             </td>
 		</tr>
-        <?php
+		<?php
 			}
 		?>
 	</table>
+
+	<br/><br/>
+<?php
+
+
+	$query = "SELECT media.title FROM media INNER JOIN upload ON media.mediaid = upload.mediaid INNER JOIN users ON upload.username = users.username WHERE users.username='$username'";
+	$result = mysqli_query($con, $query );
+	if (!$result)
+	{
+	   die ("Could not query the media table in the database: <br />". mysqli_error($con));
+	}
+?>  
+    <div style="background:#339900;color:#FFFFFF; width:150px;">My Uploaded Media</div>
+	<table width="50%" cellpadding="0" cellspacing="0">
+		<?php
+			while ($result_row = mysqli_fetch_row($result))
+			{ 
+		?>
+        <tr valign="top">			
+			<td>
+					<?php 
+						echo $result_row[0];
+					?>
+			</td>
+         </tr>
+		<?php
+			}
+		?>
+	</table>
+
+
 
 </body>
 </html>

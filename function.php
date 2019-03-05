@@ -120,5 +120,11 @@ function getContacts($username){
 	}
 	return $result;
 }
+
+function getMedia($username){
+	$query = "SELECT media.title FROM media INNER JOIN upload ON media.mediaid = upload.mediaid INNER JOIN users ON upload.username = users.username WHERE users.username='$username'";
+	$result = mysqli_query($con, $query);
+	return $result;
+}
 	
 ?>
