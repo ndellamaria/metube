@@ -65,3 +65,7 @@ label {
    position:absolute;
    text-align:center;
 }
+
+table, th, td {
+	text-align: center;
+}

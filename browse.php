@@ -7,7 +7,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Media browse</title>
-<link rel="stylesheet" type="text/css" href="css/default.css" />
+<link rel="stylesheet" type="text/css" href="default.css" />
 <script type="text/javascript" src="js/jquery-latest.pack.js"></script>
 <script type="text/javascript">
 function saveDownload(id)
@@ -24,6 +24,22 @@ function saveDownload(id)
 </head>
 
 <body>
+
+<div class="topnav">
+  <a class="active" href="browse.php">MeTube</a>
+  <input type="text" placeholder="Search..">
+  <?php 
+	if (! empty($_SESSION['logged_in']))
+	{
+  		echo "<a href='logout.php'>Logout</a>
+  		<a href='update.php'>Profile</a>";
+	}
+	else {
+		echo"<a href='index.php'>Login</a>";
+	}
+  ?>
+</div>
+
 <h1>Homepage</h1>
 <p>Welcome <?php echo $_SESSION['username'];?>.</p>
 <?php 
@@ -92,15 +108,25 @@ function saveDownload(id)
 			while ($result_row = mysqli_fetch_row($result))
 			{ 
 		?>
+		<tr>
+			<th>Owner</th>
+			<th>Title</th>
+			<th>Description</th>
+			<th>Category</th>
+			<th></th>
+		</tr>
         <tr valign="top">			
 			<td>
 					<?php 
-						echo $result_row[0];
+						echo $result_row[8];
 					?>
 			</td>
             <td>
-            	<a href="media.php?id=<?php echo $result_row[0];?>" target="_blank"><?php echo $result_row[1];?></a> 
+            	<a href="media.php?id=<?php echo $result_row[5];?>" target="_blank"><?php echo $result_row[5];?></a> 
             </td>
+            <td><?php echo $result_row[6];?></td>
+            <td><?php echo $result_row[7];?></td>
+
             <td>
             	<a href="<?php echo $result_row[2].$result_row[1];?>" target="_blank" onclick="javascript:saveDownload(<?php echo $result_row[0];?>);">Download</a>
             </td>
