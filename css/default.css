@@ -18,6 +18,10 @@ table, th, td {
 	text-align: center;
 }
 
+h1 {
+	color: red;
+}
+
 /* Add a black background color to the top navigation bar */
 .topnav {
   overflow: hidden;

@@ -93,7 +93,7 @@ if(isset($_POST['submit'])) {
 		}
 		else { 
 	?>
-		<table>
+		<table style="width:30%">
 			<tr>
 				<td>Username</td>
 				<td>Email</td>
