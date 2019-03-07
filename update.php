@@ -127,7 +127,7 @@ if(isset($_POST['submit'])) {
 		}
 	?>  
 
-	<table width="50%" cellpadding="0" cellspacing="0">
+	<table width="50%" cellpadding="0" cellspacing="0" style="text-align: center">
 		<tr>
 			<th>Title</th>
 			<th>Description</th>

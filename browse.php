@@ -72,7 +72,7 @@ function saveDownload(id)
 ?>
     
     <div style="background:#339900;color:#FFFFFF; width:150px;">All Uploaded Media</div>
-	<table width="50%" cellpadding="0" cellspacing="0">
+	<table width="50%" cellpadding="0" cellspacing="0" style="text-align: center">
 		<?php
 			while ($result_row = mysqli_fetch_row($result))
 			{ 
