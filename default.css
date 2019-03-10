@@ -51,3 +51,19 @@ h1 {
   margin-right: 16px;
   font-size: 17px;
 }
+
+.all_media {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  justify-content: flex-start;
+}
+
+.media_box {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  padding: 10px;
+}

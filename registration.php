@@ -1,4 +1,26 @@
-<link rel="stylesheet" type="text/css" href="css/default.css" />
+<head> 
+<title>Add Contact</title>
+<link rel="stylesheet" type="text/css" href="default.css" />
+</head>
+
+<body>
+<div class="topnav">
+  <a class="active" href="browse.php">MeTube</a>
+  <input type="text" placeholder="Search..">
+  <?php 
+	if (! empty($_SESSION['logged_in']))
+	{
+  		echo "<a href='logout.php'>Logout</a>
+  		<a href='update.php'>Profile</a>";
+	}
+	else {
+		echo"<a href='index.php'>Login</a>";
+		echo"<a href='registeration.php'>Register</a>";
+	}
+  ?>
+</div>
+</body>
+
 <?php
 session_start();
 
@@ -18,6 +40,9 @@ if(isset($_POST['submit'])) {
 
 			if($result){
 				$smsg = "User Created Successfully";
+				$_SESSION['username']=$_POST['username']; //Set the $_SESSION['username']
+				$_SESSION['logged_in']=1;
+				header('Location: browse.php');
 			}
 			else {
 				$fmsg = "User Registration Failed".mysqli_error($con);
