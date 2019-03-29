@@ -160,7 +160,7 @@ if(isset($_POST['submit'])) {
 		?>
         <tr valign="top">			
 			<td>
-					<a href="media.php?id=<?php echo $result_row[5];?>" target="_blank"><?php echo $result_row[5];?></a>
+					<h4><a href="media.php?id=<?php echo $result_row[0];?>" target="_blank"><?php echo $result_row[5];?></a></h4>
 			</td>
 			<td>
 					<?php 

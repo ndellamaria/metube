@@ -27,7 +27,6 @@ function saveDownload(id)
 
 <div class="topnav">
   <a class="active" href="browse.php">MeTube</a>
-  <input type="text" placeholder="Search..">
   <?php 
 	if (! empty($_SESSION['logged_in']))
 	{
@@ -64,7 +63,28 @@ function saveDownload(id)
 <br/><br/>
 
 <?php
-	$query = "SELECT * from media"; 
+	if(isset($_POST['type'])) {
+		$type = $_POST['type'];
+		if($type == 'all'){
+			$query = "SELECT * from media"; 
+		}
+		else if($type == 'images') {
+			$query = "SELECT * from media WHERE category='image'";
+		}
+		else if($type == 'videos'){
+			$query = "SELECT * from media WHERE category='video'";
+		}
+		else if($type == 'audio'){
+			$query = "SELECT * from media WHERE category='audio'";
+		}
+		else{
+			$query = "SELECT * from media";
+		}
+	}
+	else {
+		$query = "SELECT * from media";
+	}
+	
 	$result = mysqli_query($con, $query );
 	if (!$result)
 	{
@@ -72,7 +92,16 @@ function saveDownload(id)
 	}
 ?>
     
-    <h3>All Uploaded Media</h3>
+    <h3>All Uploaded Media</h3> 
+    <form action="browse.php" method="post">
+  		<select name="type" type="text">
+    		<option value="all">All</option>
+    		<option value="images">Images</option>
+    		<option value="videos">Videos</option>
+    		<option value="audio">Audio</option>
+  		</select>
+  		<input type="submit">
+  	</form>
     <br/>
     <div class="all_media">
 		<?php
@@ -93,7 +122,7 @@ function saveDownload(id)
 				else //view movie
 				{	
 			?>    
-		    <object id="MediaPlayer" width=180 height=120 classid="CLSID:22D6f312-B0F6-11D0-94AB-0080C74C7E95" standby="Loading Windows Media Player components…" type="application/x-oleobject" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112">
+		    <object id="MediaPlayer" width=300 height=200 classid="CLSID:22D6f312-B0F6-11D0-94AB-0080C74C7E95" standby="Loading Windows Media Player components…" type="application/x-oleobject" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112">
 
 			<param name="filename" value="<?php echo $result_row[2].$result_row[1];  ?>">
 			<param name="Showcontrols" value="True">

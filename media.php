@@ -9,9 +9,26 @@
 <title>Media</title>
 <script src="Scripts/AC_ActiveX.js" type="text/javascript"></script>
 <script src="Scripts/AC_RunActiveContent.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="default.css" />
 </head>
 
 <body>
+<div class="topnav">
+  <a class="active" href="browse.php">MeTube</a>
+  <input type="text" placeholder="Search..">
+  <?php 
+	if (! empty($_SESSION['logged_in']))
+	{
+  		echo "<a href='logout.php'>Logout</a>
+  		<a href='update.php'>Profile</a>";
+	}
+	else {
+		echo"<a href='index.php'>Login</a>";
+		echo"<a href='register.php'>Register</a>";
+	}
+  ?>
+</div>
+
 <?php
 if(isset($_GET['id'])) {
 	$query = "SELECT * FROM media WHERE mediaid='".$_GET['id']."'";
@@ -23,6 +40,24 @@ if(isset($_GET['id'])) {
 	$filename=$result_row[1];
 	$filepath=$result_row[2];
 	$type=$result_row[3];
+
+if(isset($_POST['submit'])){
+	$username = $_SESSION['username'];
+	$mediaid = $_GET['id'];
+	$comment = $_POST['comment'];
+	$query = "INSERT INTO comments(username, mediaid, comment) VALUES ('$username', '$mediaid', '$comment')";
+	$result = mysqli_query($con, $query);
+
+	if($result){
+		$smsg = "Comment Created Successfully";
+		$mediapath='Location: media.php?id='.$_GET["id"];
+		header($mediapath);
+	}
+	else {
+		$fmsg = "Comment Failed".mysqli_error($con);
+	}
+}
+
 ?>
 
 <div class="meta_media">
@@ -52,8 +87,42 @@ if(isset($_GET['id'])) {
 		<p>Date Uploaded: <?php echo $result_row[4]?></p>
 		<p>Category: <?php echo $result_row[7]?></p>
 		<p>Description: <?php echo $result_row[6]?></p>
+		<b><p>Comments:</p></b>
+		<?php 
+			$query = "SELECT * FROM comments WHERE mediaid='".$_GET['id']."'"."ORDER BY commentTime";
+			$result = mysqli_query($con, $query);
+		?>
+		<table style="text-align: center">
+			<tr>
+				<th>User</th>
+				<th>Comment</th>
+			</tr>
+			<?php
+				while ($row = mysqli_fetch_array($result, MYSQLI_NUM)) {
+			?>
+			<tr>
+				<td><?php echo $row[1] ?></td>
+				<td><?php echo $row[3] ?></td>
+			</tr>
+			<?php } ?>
+			<?php 
+				if (! empty($_SESSION['logged_in']))
+				{
+					$mediapath="media.php?id=".$_GET["id"]; ?> 
+					<form method="POST" action=<?php echo $mediapath ?>>
+						<tr>
+	  						<td><input name="comment" type="text" placeholder="New comment..."></td>
+						</tr>
+						<tr>
+	    					<td><input name="submit" type="submit" value="Post"><br /></td>
+						</tr>
+					</form>
+				<?php }
+			?>
+		</table>
 	</div>
-
+	<?php if(isset($smsg)){ ?><div role="alert"> <?php echo $smsg; ?> </div><?php } ?>
+	<?php if(isset($fmsg)){ ?><div role="alert"> <?php echo $fmsg; ?> </div><?php } ?>
 </div>
               
 <?php
@@ -61,7 +130,7 @@ if(isset($_GET['id'])) {
 else
 {
 ?>
-<meta http-equiv="refresh" content="0;url=browse.php">
+<meta http-equiv="refresh" content="0;url=media.php?id=".<?php echo $GET_["id"]; ?>>
 <?php
 }
 ?>
