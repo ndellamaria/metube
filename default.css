@@ -14,10 +14,6 @@
 	margin-right:60%;
 }
 
-table, th, td {
-	text-align: center;
-}
-
 h1 {
 	color: red;
 }
@@ -54,4 +50,20 @@ h1 {
   margin-top: 8px;
   margin-right: 16px;
   font-size: 17px;
+}
+
+.all_media {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  justify-content: flex-start;
+}
+
+.media_box {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  padding: 20px;
 }

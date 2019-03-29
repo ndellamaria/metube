@@ -1,4 +1,26 @@
-<link rel="stylesheet" type="text/css" href="css/default.css" />
+<head> 
+<title>Add Contact</title>
+<link rel="stylesheet" type="text/css" href="default.css" />
+</head>
+
+<body>
+<div class="topnav">
+  <a class="active" href="browse.php">MeTube</a>
+  <input type="text" placeholder="Search..">
+  <?php 
+	if (! empty($_SESSION['logged_in']))
+	{
+  		echo "<a href='logout.php'>Logout</a>
+  		<a href='update.php'>Profile</a>";
+	}
+	else {
+		echo"<a href='index.php'>Login</a>";
+		echo"<a href='registration.php'>Register</a>";
+	}
+  ?>
+</div>
+</body>
+
 <h1>Welcome to MeTube</h1>
 <h3>Please login or register to continue.</h3>
 

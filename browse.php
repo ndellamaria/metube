@@ -36,6 +36,7 @@ function saveDownload(id)
 	}
 	else {
 		echo"<a href='index.php'>Login</a>";
+		echo"<a href='registration.php'>Register</a>";
 	}
   ?>
 </div>
@@ -63,7 +64,28 @@ function saveDownload(id)
 <br/><br/>
 
 <?php
-	$query = "SELECT * from media"; 
+	if(isset($_POST['type'])) {
+		$type = $_POST['type'];
+		if($type == 'all'){
+			$query = "SELECT * from media"; 
+		}
+		else if($type == 'images') {
+			$query = "SELECT * from media WHERE category='image'";
+		}
+		else if($type == 'videos'){
+			$query = "SELECT * from media WHERE category='video'";
+		}
+		else if($type == 'audio'){
+			$query = "SELECT * from media WHERE category='audio'";
+		}
+		else{
+			$query = "SELECT * from media";
+		}
+	}
+	else {
+		$query = "SELECT * from media";
+	}
+	
 	$result = mysqli_query($con, $query );
 	if (!$result)
 	{
@@ -71,38 +93,62 @@ function saveDownload(id)
 	}
 ?>
     
-    <div style="background:#339900;color:#FFFFFF; width:150px;">All Uploaded Media</div>
-	<table width="50%" cellpadding="0" cellspacing="0">
+    <h3>All Uploaded Media</h3> 
+    <h4>Category</h4>
+    <form action="browse.php" method="post">
+  		<select name="type" type="text">
+    		<option value="all">All</option>
+    		<option value="images">Images</option>
+    		<option value="videos">Videos</option>
+    		<option value="audio">Audio</option>
+  		</select>
+  		<input type="submit">
+  	</form>
+  	<h4>Playlist</h4>
+  	<form action="browse.php" method="post">
+  		<select name="playlist" type="text">
+    		<option value="all">All</option>
+    		<option value="favorites">Favorites</option>
+  		</select>
+  		<input type="submit">
+  	</form>
+
+    <br/>
+    <div class="all_media">
 		<?php
 			while ($result_row = mysqli_fetch_row($result))
 			{ 
-		?>
-		<tr>
-			<th>Owner</th>
-			<th>Title</th>
-			<th>Description</th>
-			<th>Category</th>
-			<th></th>
-		</tr>
-        <tr valign="top">			
-			<td>
-					<?php 
-						echo $result_row[8];
-					?>
-			</td>
-            <td>
-            	<a href="media.php?id=<?php echo $result_row[0];?>" target="_blank"><?php echo $result_row[5];?></a> 
-            </td>
-            <td><?php echo $result_row[6];?></td>
-            <td><?php echo $result_row[7];?></td>
 
-            <td>
-            	<a href="<?php echo $result_row[2].$result_row[1];?>" target="_blank" onclick="javascript:saveDownload(<?php echo $result_row[0];?>);">Download</a>
-            </td>
-		</tr>
+		?>	
+
+		<div class="media_box">
+			<?php
+				$filename=$result_row[1];
+				$filepath=$result_row[2];
+				$type=$result_row[3];
+				if(substr($type,0,5)=="image") //view image
+				{
+					echo "<img src='".$filepath.$filename."' height=200 width=300/>";
+				}
+				else //view movie
+				{	
+			?>    
+		    <object id="MediaPlayer" width=300 height=200 classid="CLSID:22D6f312-B0F6-11D0-94AB-0080C74C7E95" standby="Loading Windows Media Player components…" type="application/x-oleobject" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112">
+
+			<param name="filename" value="<?php echo $result_row[2].$result_row[1];  ?>">
+			<param name="Showcontrols" value="True">
+			<param name="autoStart" value="True">
+
+			<embed type="application/x-mplayer2" src="<?php echo $result_row[2].$result_row[1];  ?>" name="MediaPlayer" width=320 height=240></embed>
+
+			</object>
+			<?php } ?>
+			<h4><a href="media.php?id=<?php echo $result_row[0];?>" target="_blank"><?php echo $result_row[5];?></a></h4>
+			<a href="<?php echo $result_row[2].$result_row[1];?>" target="_blank" onclick="javascript:saveDownload(<?php echo $result_row[0];?>);">Download</a>
+		</div>	
 		<?php
-			}
-		?>
-	</table>
+		}
+	?>
+	</div>
 </body>
 </html>

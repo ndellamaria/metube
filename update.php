@@ -3,9 +3,29 @@ session_start();
 
 include_once "function.php";
 ?>
-<head>
-	<link rel="stylesheet" type="text/css" href="default.css" />
+
+<head> 
+<title>Add Contact</title>
+<link rel="stylesheet" type="text/css" href="default.css" />
 </head>
+
+<body>
+<div class="topnav">
+  <a class="active" href="browse.php">MeTube</a>
+  <input type="text" placeholder="Search..">
+  <?php 
+	if (! empty($_SESSION['logged_in']))
+	{
+  		echo "<a href='logout.php'>Logout</a>
+  		<a href='update.php'>Profile</a>";
+	}
+	else {
+		echo"<a href='index.php'>Login</a>";
+		echo"<a href='register.php'>Register</a>";
+	}
+  ?>
+</div>
+</body>
 
 <?php
 if(isset($_POST['submit'])) {
@@ -127,7 +147,7 @@ if(isset($_POST['submit'])) {
 		}
 	?>  
 
-	<table width="50%" cellpadding="0" cellspacing="0">
+	<table width="50%" cellpadding="0" cellspacing="0" style="text-align: center">
 		<tr>
 			<th>Title</th>
 			<th>Description</th>
@@ -140,7 +160,7 @@ if(isset($_POST['submit'])) {
 		?>
         <tr valign="top">			
 			<td>
-					<a href="media.php?id=<?php echo $result_row[5];?>" target="_blank"><?php echo $result_row[5];?></a>
+					<h4><a href="media.php?id=<?php echo $result_row[0];?>" target="_blank"><?php echo $result_row[5];?></a></h4>
 			</td>
 			<td>
 					<?php 
