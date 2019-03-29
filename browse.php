@@ -16,10 +16,10 @@ function saveDownload(id)
 	{
        id: id,
 	},
-	function(message) 
+	function(message)
     { }
  	);
-} 
+}
 </script>
 </head>
 
@@ -28,7 +28,7 @@ function saveDownload(id)
 <div class="topnav">
   <a class="active" href="browse.php">MeTube</a>
   <input type="text" placeholder="Search..">
-  <?php 
+  <?php
 	if (! empty($_SESSION['logged_in']))
 	{
   		echo "<a href='logout.php'>Logout</a>
@@ -42,7 +42,7 @@ function saveDownload(id)
 </div>
 
 <h1>Browse</h1>
-<?php 
+<?php
 	if (! empty($_SESSION['logged_in']))
 	{
 		$username = $_SESSION['username'];
@@ -56,7 +56,7 @@ function saveDownload(id)
 		}
 		?>
 		</div>
-		<?php } 
+		<?php }
 		else {
 			echo "<p>Please login to upload media.</p>";
 		}
@@ -67,7 +67,7 @@ function saveDownload(id)
 	if(isset($_POST['type'])) {
 		$type = $_POST['type'];
 		if($type == 'all'){
-			$query = "SELECT * from media"; 
+			$query = "SELECT * from media";
 		}
 		else if($type == 'images') {
 			$query = "SELECT * from media WHERE category='image'";
@@ -85,7 +85,7 @@ function saveDownload(id)
 	else {
 		$query = "SELECT * from media";
 	}
-	
+
 	$result = mysqli_query($con, $query );
 
 	if (!$result)
@@ -109,6 +109,7 @@ function saveDownload(id)
 	}
 ?>
     <h3>All Uploaded Media</h3> 
+
     <h4>Category</h4>
     <form action="browse.php" method="post">
   		<select name="type" type="text">
@@ -138,9 +139,9 @@ function saveDownload(id)
     <div class="all_media">
 		<?php
 			while ($result_row = mysqli_fetch_row($result))
-			{ 
+			{
 
-		?>	
+		?>
 
 		<div class="media_box">
 			<?php
@@ -153,9 +154,9 @@ function saveDownload(id)
 					echo "<img src='".$filepath.$filename."' height=200 width=300/>";
 				}
 				else //view movie
-				{	
-					?>    
-				    <object id="MediaPlayer" width=300 height=200 classid="CLSID:22D6f312-B0F6-11D0-94AB-0080C74C7E95" standby="Loading Windows Media Player components…" type="application/x-oleobject" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112">
+				{
+			?>
+		    		<object id="MediaPlayer" width=300 height=200 classid="CLSID:22D6f312-B0F6-11D0-94AB-0080C74C7E95" standby="Loading Windows Media Player components…" type="application/x-oleobject" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112">
 
 					<param name="filename" value="<?php echo $result_row[2].$result_row[1];  ?>">
 					<param name="Showcontrols" value="True">
@@ -186,7 +187,7 @@ function saveDownload(id)
 				<?php } ?>
 			<?php }	?>
 			<a href="<?php echo $result_row[2].$result_row[1];?>" target="_blank" onclick="javascript:saveDownload(<?php echo $result_row[0];?>);">Download</a>
-		</div>	
+		</div>
 		<?php
 		}
 	?>
