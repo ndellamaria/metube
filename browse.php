@@ -27,6 +27,7 @@ function saveDownload(id)
 
 <div class="topnav">
   <a class="active" href="browse.php">MeTube</a>
+  <input type="text" placeholder="Search..">
   <?php 
 	if (! empty($_SESSION['logged_in']))
 	{
@@ -93,6 +94,7 @@ function saveDownload(id)
 ?>
     
     <h3>All Uploaded Media</h3> 
+    <h4>Category</h4>
     <form action="browse.php" method="post">
   		<select name="type" type="text">
     		<option value="all">All</option>
@@ -102,6 +104,15 @@ function saveDownload(id)
   		</select>
   		<input type="submit">
   	</form>
+  	<h4>Playlist</h4>
+  	<form action="browse.php" method="post">
+  		<select name="playlist" type="text">
+    		<option value="all">All</option>
+    		<option value="favorites">Favorites</option>
+  		</select>
+  		<input type="submit">
+  	</form>
+
     <br/>
     <div class="all_media">
 		<?php
