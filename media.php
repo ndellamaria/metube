@@ -2,7 +2,7 @@
 <?php
 	session_start();
 	include_once "function.php";
-?>	
+?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -16,7 +16,7 @@
 <div class="topnav">
   <a class="active" href="browse.php">MeTube</a>
   <input type="text" placeholder="Search..">
-  <?php 
+  <?php
 	if (! empty($_SESSION['logged_in']))
 	{
   		echo "<a href='logout.php'>Logout</a>
@@ -34,9 +34,9 @@ if(isset($_GET['id'])) {
 	$query = "SELECT * FROM media WHERE mediaid='".$_GET['id']."'";
 	$result = mysqli_query($con, $query );
 	$result_row = mysqli_fetch_row($result);
-	
+
 	updateMediaTime($_GET['id']);
-	
+
 	$filename=$result_row[1];
 	$filepath=$result_row[2];
 	$type=$result_row[3];
@@ -69,8 +69,8 @@ if(isset($_POST['submit'])){
 				echo "<img src='".$filepath.$filename."' width=400px height=325px/>";
 			}
 			else //view movie
-			{	
-		?>	      
+			{
+		?>
 	    <object id="MediaPlayer" width=320 height=286 classid="CLSID:22D6f312-B0F6-11D0-94AB-0080C74C7E95" standby="Loading Windows Media Player components…" type="application/x-oleobject" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112">
 
 		<param name="filename" value="<?php echo $result_row[2].$result_row[1];  ?>">
@@ -83,16 +83,36 @@ if(isset($_POST['submit'])){
 		<?php } ?>
 	</div>
 	<div class="meta">
-		<p>Owner: <?php echo $result_row[8]?></p>
-		<p>Date Uploaded: <?php echo $result_row[4]?></p>
-		<p>Category: <?php echo $result_row[7]?></p>
-		<p>Description: <?php echo $result_row[6]?></p>
+		<p><b>Owner:</b> <?php echo $result_row[8]?></p>
+		<p><b>Date Uploaded:</b> <?php echo $result_row[4]?></p>
+		<p><b>Category:</b> <?php echo $result_row[7]?></p>
+		<p><b>Description:</b> <?php echo $result_row[6]?></p>
 		<b><p>Comments:</p></b>
-		<?php 
+		<?php
 			$query = "SELECT * FROM comments WHERE mediaid='".$_GET['id']."'"."ORDER BY commentTime";
 			$result = mysqli_query($con, $query);
 		?>
-		<table style="text-align: center">
+		<style type = "text/css">
+			#table1 {
+				border-collapse: collapse;
+				width:30%
+				color:#D3D3D3;
+				font-size: 15px;
+				text-align: left;
+			}
+			#table1 th, #table1 td {
+	      border: 1px solid #ddd;
+	      padding: 8px;
+	    }
+			#table1 th {
+				background-color: #e9e9e9;
+				padding-top: 12px;
+				padding-bottom: 12px;
+				text-align: left;
+			}
+
+			</style>
+		<table id = "table1">
 			<tr>
 				<th>User</th>
 				<th>Comment</th>
@@ -105,10 +125,10 @@ if(isset($_POST['submit'])){
 				<td><?php echo $row[3] ?></td>
 			</tr>
 			<?php } ?>
-			<?php 
+			<?php
 				if (! empty($_SESSION['logged_in']))
 				{
-					$mediapath="media.php?id=".$_GET["id"]; ?> 
+					$mediapath="media.php?id=".$_GET["id"]; ?>
 					<form method="POST" action=<?php echo $mediapath ?>>
 						<tr>
 	  						<td><input name="comment" type="text" placeholder="New comment..."></td>
@@ -124,7 +144,7 @@ if(isset($_POST['submit'])){
 	<?php if(isset($smsg)){ ?><div role="alert"> <?php echo $smsg; ?> </div><?php } ?>
 	<?php if(isset($fmsg)){ ?><div role="alert"> <?php echo $fmsg; ?> </div><?php } ?>
 </div>
-              
+
 <?php
 }
 else
