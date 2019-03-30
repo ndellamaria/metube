@@ -66,4 +66,5 @@ h1 {
   flex-wrap: nowrap;
   justify-content: space-around;
   padding: 20px;
+	height: 350px;
 }

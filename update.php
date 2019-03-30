@@ -4,7 +4,7 @@ session_start();
 include_once "function.php";
 ?>
 
-<head>
+<head> 
 <title>Add Contact</title>
 <link rel="stylesheet" type="text/css" href="default.css" />
 </head>
@@ -13,7 +13,7 @@ include_once "function.php";
 <div class="topnav">
   <a class="active" href="browse.php">MeTube</a>
   <input type="text" placeholder="Search..">
-  <?php
+  <?php 
 	if (! empty($_SESSION['logged_in']))
 	{
   		echo "<a href='logout.php'>Logout</a>
@@ -69,7 +69,7 @@ if(isset($_POST['submit'])) {
 <?php if(isset($smsg)){ ?><div role="alert"> <?php echo $smsg; ?> </div><?php } ?>
 <?php if(isset($fmsg)){ ?><div role="alert"> <?php echo $fmsg; ?> </div><?php } ?>
 
-<?php
+<?php 
 	$_susername = $_SESSION['username'];
 	$query = "select * from users where username='$_susername'";
 	$result = mysqli_query($con, $query);
@@ -92,14 +92,14 @@ if(isset($_POST['submit'])) {
 		<td width="80%"><input class="text"  type="password" name="password" value="<?php echo $_spassword; ?>"><br /></td>
 	</tr>
 	<tr>
-
-		<td><input name="submit" type="submit" value="Update Information"><br /></td>
+    
+		<td><input name="submit" type="submit" value="Update"><br /></td>
 	</tr>
 </table>
 </form>
 
 <div class="my_contacts">
-	<?php
+	<?php 
 		echo "<h3>Contacts</h3>";
 		$query = "SELECT id FROM users WHERE username='$_susername'";
 		$result = mysqli_query($con, $query);
@@ -111,46 +111,12 @@ if(isset($_POST['submit'])) {
 		if(!$result){
 			echo "fail";
 		}
-		else {
+		else { 
 	?>
-  <style type = "text/css">
-    #table1 {
-      border-collapse: collapse;
-      width:30%
-      color:#D3D3D3;
-      font-size: 15px;
-      text-align: left;
-    }
-    #table1 th {
-      background-color: red;
-      padding-top: 12px;
-      padding-bottom: 12px;
-      text-align: left;
-      color: white;
-    }
-    #table1 th, #table1 td {
-      border: 1px solid #ddd;
-      padding: 8px;
-    }
-
-    #table1 td {
-      background-color: white;
-      color: black;
-    }
-
-    #th2 {
-      background-color: red;
-      padding-top: 12px;
-      font-size: 20px;
-      padding-bottom: 12px;
-      text-align: left;
-      color: white;
-    }
-    </style>
-		<table id = "table1">
+		<table style="width:30%">
 			<tr>
-				<th>Username</th>
-				<th>Email</th>
+				<td>Username</td>
+				<td>Email</td>
 			</tr>
 		<?php
 		while ($row = mysqli_fetch_array($result, MYSQLI_NUM)) {
@@ -162,7 +128,7 @@ if(isset($_POST['submit'])) {
 		<?php } ?>
 		</table>
 		<?php } ?>
-
+		
 
 	<?php
     	echo "<p> Click <a href='add_contact.php'>here</a> to add a contact by username.</p>";
@@ -179,29 +145,30 @@ if(isset($_POST['submit'])) {
 		{
 		   die ("Could not query the media table in the database: <br />". mysqli_error($con));
 		}
-	?>
+	?>  
 
-	<table id = "table1">
+	<table width="50%" cellpadding="0" cellspacing="0" style="text-align: center">
 		<tr>
-			<th id = "th2">Title</th>
-			<th id = "th2">Description</th>
-			<th id = "th2">Category</th>
+			<th>Title</th>
+			<th>Description</th>
+			<th>Category</th>
+			<th></th>
 		</tr>
 		<?php
 			while ($result_row = mysqli_fetch_row($result))
-			{
+			{ 
 		?>
-        <tr valign="top">
+        <tr valign="top">			
 			<td>
 					<h4><a href="media.php?id=<?php echo $result_row[0];?>" target="_blank"><?php echo $result_row[5];?></a></h4>
 			</td>
 			<td>
-					<?php
+					<?php 
 						echo $result_row[6];
 					?>
 			</td>
 			<td>
-					<?php
+					<?php 
 						echo $result_row[7];
 					?>
 			</td>
