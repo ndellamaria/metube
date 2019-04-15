@@ -218,7 +218,7 @@ function saveDownload(id)
 				else //view movie
 				{
 			?>
-		    		<object id="MediaPlayer" width=300 height=200 classid="CLSID:22D6f312-B0F6-11D0-94AB-0080C74C7E95" standby="Loading Windows Media Player components…" type="application/x-oleobject" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112">
+		    		<div><object id="MediaPlayer" width=300 height=200 classid="CLSID:22D6f312-B0F6-11D0-94AB-0080C74C7E95" standby="Loading Windows Media Player components…" type="application/x-oleobject" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112">
 
 					<param name="filename" value="<?php echo $result_row[2].$result_row[1];  ?>">
 					<param name="Showcontrols" value="True">
@@ -226,9 +226,9 @@ function saveDownload(id)
 
 					<embed type="application/x-mplayer2" src="<?php echo $result_row[2].$result_row[1];  ?>" name="MediaPlayer" width=320 height=200></embed>
 
-					</object>
+					</object></div>
 			<?php } ?>
-			<h4><a href="media.php?id=<?php echo $result_row[0];?>" target="_blank"><?php echo $result_row[5];?></a></h4> 
+			<div><h4><a href="media.php?id=<?php echo $result_row[0];?>" target="_blank"><?php echo $result_row[5];?></a></h4></div> 
 			<?php
 			if (! empty($_SESSION['logged_in']))
 			{ 
@@ -236,22 +236,22 @@ function saveDownload(id)
 				$favs = mysqli_query($con, $query );
 				$favs_row = mysqli_fetch_row($favs);
 				if($favs_row[0] == 0){ ?>
-					<form action="browse.php" method="post">
+					<div><form action="browse.php" method="post">
 						<input type="hidden" name="favorite" value="<?php echo $mediaid; ?>">
 						<input type="submit" value="Favorite">
-					</form><br>
+					</form><br></div>
 				<?php } 
 				else { ?>
-					<form action="browse.php" method="post">
+					<div><form action="browse.php" method="post">
 						<input type="hidden" name="unfavorite" value="<?php echo $mediaid; ?>">
 						<input type="submit" value="Unfavorite">
-					</form><br>
+					</form><br></div>
 				<?php } ?>
-				<h4>Add to playlist:</h4>
+				<div><h4>Add to playlist:</h4></div>
 				<?php 
 					$query = "SELECT * FROM user_playlists where username='$username'";
 					$addToPlaylist_result = mysqli_query($con, $query); ?>
-					<form action="browse.php" method="post">
+					<div><form action="browse.php" method="post">
 						<input type="hidden" name="mediaAddToPlaylist" value="<?php echo $mediaid; ?>">
 						<select name="add_to_playlist">
 							<?php while ($addToPlaylist_row = mysqli_fetch_row($addToPlaylist_result)){ ?>
@@ -259,7 +259,7 @@ function saveDownload(id)
 							<?php } ?>
 						</select>
 						<input type="submit" value="submit">
-					</form>
+					</form></div>
 			<?php } ?>
 			<a href="<?php echo $result_row[2].$result_row[1];?>" target="_blank" onclick="javascript:saveDownload(<?php echo $result_row[0];?>);">Download</a>
 		</div>
