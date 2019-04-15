@@ -127,4 +127,21 @@ function getMedia($username){
 	return $result;
 }
 	
+function addPlaylist($username, $playlist)
+{
+	//You can write your own functions here.
+	global $con;
+
+	$query = "SELECT playlist FROM user_playlists WHERE username='$username' and playlist='$playlist'";
+	$result = mysqli_query($con, $query);
+	$row = mysqli_fetch_row($result);
+
+	if(!$row) {
+
+	}
+
+	if($row)
+		return 2; // already a contact
+}
+
 ?>

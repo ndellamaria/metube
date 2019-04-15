@@ -25,14 +25,14 @@ if(!file_exists($dirfile))
 	mkdir($dirfile);
 	chmod($dirfile, 0755);
 }
-	
+
 
 	if($_FILES["file"]["error"] > 0 )
 	{ $result=$_FILES["file"]["error"];} //error from 1-4
 	else
 	{
 	  $upfile = $dirfile.urlencode($_FILES["file"]["name"]);
-	  
+
 	  if(file_exists($upfile))
 	  {
 	  		$result="5"; //The file has been uploaded.
@@ -49,34 +49,44 @@ if(!file_exists($dirfile))
 					chmod($upfile, 0644);
 					//insert into media table
 					$insert = "insert into media(
-							  mediaid, filename,filepath,type,title,description,category,user) 
+							  mediaid, filename,filepath,type,title,description,category,user)
 							  values(NULL,
 							  	'". urlencode($_FILES["file"]["name"])."',
 							  	'$dirfile',
-							  	'".$_FILES["file"]["type"]."', 
-							  	'".$_POST["title"]."', 
-							  	'".$_POST["description"]."', 
+							  	'".$_FILES["file"]["type"]."',
+							  	'".$_POST["title"]."',
+							  	'".$_POST["description"]."',
 							  	'".$_POST["category"]."',
 							  	'$username'
 							  )";
 					$queryresult = mysqli_query($con, $insert)
 						  or die("Insert into Media error in media_upload_process.php " .mysqli_error($con));
 					$result="0";
-					
+
 					$mediaid = mysqli_insert_id($con);
 					//insert into upload table
 					$insertUpload="insert into upload(uploadid,username,mediaid) values(NULL,'$username','$mediaid')";
 					$queryresult = mysqli_query($con, $insertUpload)
 						  or die("Insert into view error in media_upload_process.php " .mysqli_error($con));
+
+					$kwords = $_POST["keywords"];
+					//trim whitespace
+					$karray = array_map('trim', explode(',', $kwords));
+
+					foreach($karray as $val){
+						$keyQuery = mysqli_query($con, "insert into keywords(mediaid, keyword) value('$mediaid', '$val')");
+					}
+
+
 				}
 			}
-			else  
+			else
 			{
 					$result="7"; //upload file failed
 			}
 		}
 	}
-	
+
 	//You can process the error code of the $result here.
 ?>
 

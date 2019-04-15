@@ -5,7 +5,9 @@ include_once "function.php";
 ?>
 
 <head> 
-<title>Add Contact</title>
+
+<title>Profile</title>
+
 <link rel="stylesheet" type="text/css" href="default.css" />
 </head>
 
@@ -80,16 +82,16 @@ if(isset($_POST['submit'])) {
 
 <table width="100%">
 	<tr>
-		<td  width="20%">Username:</td>
-		<td width="80%"><input class="text"  type="text" name="username" value="<?php echo $_SESSION['username']; ?>"><br /></td>
+		<td  width="20%">Username (max 15 characters):</td>
+		<td width="80%"><input class="text"  type="text" name="username" maxlength="15" value="<?php echo $_SESSION['username']; ?>"><br /></td>
 	</tr>
 	<tr>
 		<td  width="20%">Email:</td>
-		<td width="80%"><input class="text"  type="text" name="email" value="<?php echo $_semail; ?>"><br /></td>
+		<td width="80%"><input class="text"  type="text" name="email" maxlength="20" value="<?php echo $_semail; ?>"><br /></td>
 	</tr>
 	<tr>
-		<td  width="20%">Password:</td>
-		<td width="80%"><input class="text"  type="password" name="password" value="<?php echo $_spassword; ?>"><br /></td>
+		<td  width="20%">Password (max 15 characters):</td>
+		<td width="80%"><input class="text"  type="password" name="password" maxlength="15" value="<?php echo $_spassword; ?>"><br /></td>
 	</tr>
 	<tr>
     
@@ -108,6 +110,7 @@ if(isset($_POST['submit'])) {
 
 		$query = "SELECT username, email FROM users INNER JOIN user_contact ON users.id = user_contact.contactid WHERE user_contact.userid='$userid'";
 		$result = mysqli_query($con, $query);
+
 		if(!$result){
 			echo "fail";
 		}
@@ -117,13 +120,22 @@ if(isset($_POST['submit'])) {
 			<tr>
 				<td>Username</td>
 				<td>Email</td>
+				<td>Message</td>
 			</tr>
 		<?php
 		while ($row = mysqli_fetch_array($result, MYSQLI_NUM)) {
 		?>
+			<?php
+				$conv_query = "SELECT conversationID FROM conversations WHERE (userA='$_susername' AND userB='$row[0]') OR (userB='$_susername' AND userA='$row[0]')";
+				$conv_result = mysqli_query($con, $conv_query);
+				$conv_row = mysqli_fetch_row($conv_result);
+				$convid = $conv_row[0];
+			?>
+
 			<tr>
 				<td><?php echo $row[0] ?></td>
 				<td><?php echo $row[1] ?></td>
+				<td><a href="message.php?id=<?php echo $convid;?>" target="_blank"">Message</a></td>
 			</tr>
 		<?php } ?>
 		</table>
