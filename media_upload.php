@@ -16,7 +16,7 @@ session_start();
   <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
    Add a Media: <label style="color:#663399"><em> (Each file limit 10M)</em></label><br/>
    <input  name="file" type="file" size="50" /></p><br>
-   Title: <input name="title" type="text" /><br>
+   Title: <input name="title" type="text" maxlength="15"/><br>
    Description: <input name="description" type="text" /><br>
    Category: <select name="category">
    <option value="image">Image</option>

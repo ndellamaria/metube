@@ -111,7 +111,7 @@ if(isset($_POST['submit'])){
 					$mediapath="media.php?id=".$_GET["id"]; ?> 
 					<form method="POST" action=<?php echo $mediapath ?>>
 						<tr>
-	  						<td><input name="comment" type="text" placeholder="New comment..."></td>
+	  						<td><input name="comment" type="text" placeholder="New comment (max 200 characters)..." maxlength="200"></td>
 						</tr>
 						<tr>
 	    					<td><input name="submit" type="submit" value="Post"><br /></td>

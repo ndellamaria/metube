@@ -46,8 +46,8 @@ function saveDownload(id)
 	if (! empty($_SESSION['logged_in']))
 	{
 		$username = $_SESSION['username'];
-		echo "<p>Welcome ".$_SESSION['username']."<br/>";
-		echo "<a href='media_upload.php'>Upload File</a>";
+		echo "<p>Welcome ".$_SESSION['username'];
+		echo "<br><a href='media_upload.php'>Upload File</a>";
 ?>
 		<div id='upload_result'>
 		<?php if(isset($_REQUEST['result']) && $_REQUEST['result']!=0)
@@ -56,6 +56,12 @@ function saveDownload(id)
 		}
 		?>
 		</div>
+		<h3>Add new playlist</h3>
+		<form action="browse.php" method="post">
+			<input name="new_playlist" type="text" placeholder="new playlist..." maxlength="20"> 
+			<input type="submit" value="submit">
+		</form>
+		<h4><a href="manage_playlists.php?user=<?php echo $username;?>" target="_blank">Manage Playlists</a></h4>
 		<?php }
 		else {
 			echo "<p>Please login to upload media.</p>";
@@ -67,80 +73,126 @@ function saveDownload(id)
 	if(isset($_POST['type'])) {
 		$type = $_POST['type'];
 		if($type == 'all'){
-			$query = "SELECT * from media";
+			$type_query = "category IN ('image','video','audio')";
 		}
 		else if($type == 'images') {
-			$query = "SELECT * from media WHERE category='image'";
+			$type_query = "category='image'";
 		}
 		else if($type == 'videos'){
-			$query = "SELECT * from media WHERE category='video'";
+			$type_query = "category='video'";
 		}
 		else if($type == 'audio'){
-			$query = "SELECT * from media WHERE category='audio'";
+			$type_query = "category='audio'";
 		}
 		else{
-			$query = "SELECT * from media";
+			$type_query = "category IN ('image','video','audio')";
 		}
 	}
 	else {
-		$query = "SELECT * from media";
+		$type_query = "category IN ('image','video','audio')";
 	}
 
-	$result = mysqli_query($con, $query );
-
-	if (!$result)
-	{
-	   die ("Could not query the media table in the database: <br />". mysqli_error($con));
+	if(isset($_POST['playlist'])){
+		$playlist = $_POST['playlist'];
+		if($playlist == 'all'){
+			$playlist_query = "SELECT * from media WHERE ".$type_query;
+		}
+		else {
+			$playlist_query = "SELECT * FROM media INNER JOIN playlists ON media.mediaid=playlists.mediaid WHERE playlists.playlist='$playlist' AND username='$username' AND ".$type_query;
+		}
 	}
+	else{
+		$playlist_query = "SELECT * from media WHERE ".$type_query;
+	}
+	$result = mysqli_query($con, $playlist_query);
 ?>
    
 <?php
 	if(isset($_POST['favorite'])) {
 		$mediaid = $_POST['favorite'];
-		$query = "INSERT INTO favorites(username, mediaid) VALUES('$username', '$mediaid')";
+		$query = "INSERT INTO playlists(playlist,username, mediaid) VALUES('favorites', '$username', '$mediaid')";
 		$favs = mysqli_query($con, $query );
 	}
-
 	if(isset($_POST['unfavorite'])) {
 		$mediaid = $_POST['unfavorite'];
-		echo $mediaid;
-		$query = "DELETE FROM favorites WHERE username='$username' AND mediaid='$mediaid'";
+		$query = "DELETE FROM playlists WHERE playlist='favorites' AND username='$username' AND mediaid='$mediaid'";
 		$favs = mysqli_query($con, $query );
 	}
+	if(isset($_POST['new_playlist'])){
+		$new_playlist = $_POST['new_playlist'];
+		$query = "SELECT playlist FROM user_playlists WHERE username='$username' and playlist='$new_playlist'";
+		$playlist_result = mysqli_query($con, $query);
+		$row = mysqli_fetch_row($playlist_result);
+		if(!$row) {
+			$query = "INSERT into user_playlists(playlist, username) VALUES('$new_playlist', '$username')";
+			$new_playlist_result = mysqli_query($con, $query);
+		}
+
+		if($row) {
+			echo 'You already have a playlist with that name.';
+		}
+	}
+	if(isset($_POST['add_to_playlist'])) {
+		$mediaid = $_POST['mediaAddToPlaylist'];
+		$addToPlaylist = $_POST['add_to_playlist'];
+		$query = "SELECT * FROM playlists WHERE username='$username' and playlist='$addToPlaylist' and mediaid='$mediaid'";
+		$add_to_playlist_result = mysqli_query($con, $query);
+		$row = mysqli_fetch_row($add_to_playlist_result);
+		if(!$row) {
+			$query = "INSERT INTO playlists(playlist,username, mediaid) VALUES('$addToPlaylist', '$username', '$mediaid')";
+			$add_to_playlist_result = mysqli_query($con, $query);
+		}
+
+		if($row){
+			echo 'This media is already part of that playlist';
+		}
+	}
 ?>
-    <h3>All Uploaded Media</h3> 
-
-    <h4>Category</h4>
-    <form action="browse.php" method="post">
-  		<select name="type" type="text">
-    		<option value="all">All</option>
-    		<option value="images">Images</option>
-    		<option value="videos">Videos</option>
-    		<option value="audio">Audio</option>
-  		</select>
-  		<input type="submit">
-  	</form>
-
+    <h3>Filters</h3>
+    <table>
+    <tr>
+    	<th><h4>Category</h4></th>
+    	<?php if (! empty($_SESSION['logged_in'])) { ?>
+			<th><h4>Playlist</h4></th> <?php } ?>
+    	<th></th>
+    </tr>
+    <tr>
+	    <td>
+	    	<form action="browse.php" method="post">
+		  		<select name="type" type="text">
+		    		<option value="all" selected="selected">All</option>
+		    		<option value="images">Images</option>
+		    		<option value="videos">Videos</option>
+		    		<option value="audio">Audio</option>
+		  		</select>
+		</td>
   	<?php 
 	if (! empty($_SESSION['logged_in']))
 	{ ?>
-
-	  	<h4>Playlist</h4>
-	  	<form action="browse.php" method="post">
-	  		<select name="playlist" type="text">
-	    		<option value="all">All</option>
-	    		<option value="favorites">Favorites</option>
-	  		</select>
-	  		<input type="submit">
-	  	</form>
-
-	    <br/>
+		<td>
+		  	<form action="browse.php" method="post">
+		  <?php 
+			$query = "SELECT * FROM user_playlists where username='$username'";
+			$playlist_result = mysqli_query($con, $query); ?>
+				<select name="playlist">
+					<option value="all" selected="selected">All</option>
+					<option value="favorites">Favorites</option>
+				<?php while ($playlist_row = mysqli_fetch_row($playlist_result)){ ?>
+					<option value="<?php echo $playlist_row[2]; ?>"> <?php echo $playlist_row[2]; ?> </option><br>;
+			<?php } ?>
+				</select>
+		</td>
 	<?php } ?>
+		<td><input type="submit" value="submit"></td>
+		</form>
+	</tr>
+	</table>
+
     <div class="all_media">
 		<?php
+			//print $result;
 			while ($result_row = mysqli_fetch_row($result))
 			{
-
 		?>
 
 		<div class="media_box">
@@ -170,7 +222,7 @@ function saveDownload(id)
 			<?php
 			if (! empty($_SESSION['logged_in']))
 			{ 
-				$query = "SELECT COUNT(*) FROM favorites WHERE username='$username' and mediaid='$mediaid'";
+				$query = "SELECT COUNT(*) FROM playlists WHERE playlist='favorites' AND username='$username' and mediaid='$mediaid'";
 				$favs = mysqli_query($con, $query );
 				$favs_row = mysqli_fetch_row($favs);
 				if($favs_row[0] == 0){ ?>
@@ -185,12 +237,23 @@ function saveDownload(id)
 						<input type="submit" value="Unfavorite">
 					</form><br>
 				<?php } ?>
-			<?php }	?>
+				<h4>Add to playlist:</h4>
+				<?php 
+					$query = "SELECT * FROM user_playlists where username='$username'";
+					$addToPlaylist_result = mysqli_query($con, $query); ?>
+					<form action="browse.php" method="post">
+						<input type="hidden" name="mediaAddToPlaylist" value="<?php echo $mediaid; ?>">
+						<select name="add_to_playlist">
+							<?php while ($addToPlaylist_row = mysqli_fetch_row($addToPlaylist_result)){ ?>
+								<option value="<?php echo $addToPlaylist_row[2]; ?>"> <?php echo $addToPlaylist_row[2]; ?> </option><br>;
+							<?php } ?>
+						</select>
+						<input type="submit" value="submit">
+					</form>
+			<?php } ?>
 			<a href="<?php echo $result_row[2].$result_row[1];?>" target="_blank" onclick="javascript:saveDownload(<?php echo $result_row[0];?>);">Download</a>
 		</div>
-		<?php
-		}
-	?>
+		<?php } ?>
 	</div>
 </body>
 </html>

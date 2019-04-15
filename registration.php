@@ -1,5 +1,5 @@
 <head> 
-<title>Add Contact</title>
+<title>Registration</title>
 <link rel="stylesheet" type="text/css" href="default.css" />
 </head>
 
@@ -60,16 +60,16 @@ if(isset($_POST['submit'])) {
 
 <table width="100%">
 	<tr>
-		<td  width="20%">Username:</td>
-		<td width="80%"><input class="text"  type="text" name="username"><br /></td>
+		<td  width="20%">Username (max 15 characters):</td>
+		<td width="80%"><input class="text"  maxlength="15" type="text" name="username"><br /></td>
 	</tr>
 	<tr>
 		<td  width="20%">Email:</td>
 		<td width="80%"><input class="text"  type="text" name="email"><br /></td>
 	</tr>
 	<tr>
-		<td  width="20%">Password:</td>
-		<td width="80%"><input class="text"  type="password" name="password"><br /></td>
+		<td  width="20%">Password (max 10 characters):</td>
+		<td width="80%"><input class="text"  maxlength="10" type="password" name="password"><br /></td>
 	</tr>
 	<tr>
     

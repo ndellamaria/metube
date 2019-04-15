@@ -29,6 +29,7 @@ include_once "function.php";
 </body>
 
 <?php
+$username = $_SESSION['username'];
 
 if(isset($_POST['submit'])) {
 		if($_POST['contactname'] == "") {
@@ -49,6 +50,17 @@ if(isset($_POST['submit'])) {
 			}	
 			else if($check==0){
 				echo "Contact created successfully";
+				echo $username;
+				echo $contactname;
+				$query = "INSERT INTO conversations(userA, userB) VALUES('$username', '$contactname')";
+				$result = mysqli_query($con, $query);
+				if (!$result){
+					echo "error";
+					echo mysqli_error($con);
+				}
+				else {
+					echo "success";
+				}
 			}
 		}
 }
@@ -61,7 +73,7 @@ if(isset($_POST['submit'])) {
 	<table width="100%">
 		<tr>
 			<td  width="20%">Contact Username:</td>
-			<td width="80%"><input class="text"  type="text" name="contactname"><br /></td>
+			<td width="80%"><input class="text"  type="text" name="contactname" maxlength="15"><br /></td>
 		</tr>
         <tr>
 		<td><input name="submit" type="submit" value="Submit"><br /></td>
