@@ -1,4 +1,4 @@
-<head> 
+<head>
 <title>Add Contact</title>
 <link rel="stylesheet" type="text/css" href="default.css" />
 </head>
@@ -7,7 +7,7 @@
 <div class="topnav">
   <a class="active" href="browse.php">MeTube</a>
   <input type="text" placeholder="Search..">
-  <?php 
+  <?php
 	if (! empty($_SESSION['logged_in']))
 	{
   		echo "<a href='logout.php'>Logout</a>
@@ -43,7 +43,7 @@ if(isset($_POST['submit'])) {
 			}
 			else if($check==3){
 				$login_error = "Unregistered username.";
-			}	
+			}
 			else if($check==0){
 				$_SESSION['username']=$_POST['username']; //Set the $_SESSION['username']
 				$_SESSION['logged_in']=1;
@@ -53,7 +53,7 @@ if(isset($_POST['submit'])) {
 }
 
 
- 
+
 ?>
 	<form method="post" action="<?php echo "index.php"; ?>">
 
@@ -67,7 +67,7 @@ if(isset($_POST['submit'])) {
 			<td width="80%"><input class="text"  type="password" name="password"><br /></td>
 		</tr>
 		<tr>
-        
+
 			<td><input name="submit" type="submit" value="Login"><input name="reset" type="reset" value="Reset"><br /></td>
 		</tr>
 	</table>
@@ -77,7 +77,7 @@ if(isset($_POST['submit'])) {
 
 <?php
   if(isset($login_error))
-   {  
+   {
    	echo "<div id='passwd_result'>".$login_error."</div>";
 	if($check==3) {
 		echo "<a href=registration.php>Click here to register</a>";

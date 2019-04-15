@@ -28,9 +28,9 @@ function saveDownload(id)
 <div class="topnav">
   <a class="active" href="browse.php">MeTube</a>
 	<table align="right">
-	<form action="browseFilter.php" method="post">
-		<td><input type="text" placeholder="Search.." name="searchwords"></td>
-		<td><input type="submit" value="Search" name="search"></td>
+  <form action="browseFilter.php" method="post">
+      <td><input type="text" placeholder="Search.." name="searchwords"></td>
+	    <td><input type="submit" value="Search" name="search"></td>
 </form>
 </table>
   <?php
@@ -51,49 +51,31 @@ function saveDownload(id)
   ?>
 </div>
 
-<h1>Browse</h1>
-<?php
-	if (! empty($_SESSION['logged_in']))
-	{
-		$username = $_SESSION['username'];
-		echo "<p>Welcome ".$_SESSION['username']."<br/>";
-		echo "<a href='media_upload.php'>Upload File</a>";
-?>
-		<div id='upload_result'>
-		<?php if(isset($_REQUEST['result']) && $_REQUEST['result']!=0)
-		{
-			echo upload_error($_REQUEST['result']);
-		}
-		?>
-		</div>
-		<?php }
-		else {
-			echo "<p>Please login to upload media.</p>";
-		}
-		?>
+<h1>Search Results For: <?php $sw = $_POST['searchwords']; echo " '$sw'" ?></h1>
 <br/><br/>
 
 <?php
-	if(isset($_POST['type'])) {
+  $srch = $_POST['searchwords'];
+  	if(isset($_POST['type'])) {
 		$type = $_POST['type'];
 		if($type == 'all'){
-			$query = "SELECT * from media";
+			$query = "SELECT DISTINCT media.mediaid, media.filename, media.filepath, media.type, media.lastaccesstime, media.title, media.description, media.category, media.user FROM media LEFT JOIN keywords ON media.mediaid = keywords.mediaid WHERE media.title LIKE '%$srch%' OR media.description LIKE '%$srch%' OR keywords.keyword LIKE '%$srch%'";
 		}
 		else if($type == 'images') {
-			$query = "SELECT * from media WHERE category='image'";
+			$query = "SELECT * from media WHERE category='image' AND title LIKE '%$srch%' OR description LIKE '%$srch%'";
 		}
 		else if($type == 'videos'){
-			$query = "SELECT * from media WHERE category='video'";
+			$query = "SELECT * from media WHERE category='video' AND title LIKE '%$srch%'";
 		}
 		else if($type == 'audio'){
-			$query = "SELECT * from media WHERE category='audio'";
+			$query = "SELECT * from media WHERE category='audio' AND title LIKE '%$srch%'";
 		}
 		else{
-			$query = "SELECT * from media";
+			$query = "SELECT DISTINCT media.mediaid, media.filename, media.filepath, media.type, media.lastaccesstime, media.title, media.description, media.category, media.user FROM media LEFT JOIN keywords ON media.mediaid = keywords.mediaid WHERE media.title LIKE '%$srch%' OR media.description LIKE '%$srch%' OR keywords.keyword LIKE '%$srch%'";
 		}
 	}
 	else {
-		$query = "SELECT * from media";
+		$query = "SELECT DISTINCT media.mediaid, media.filename, media.filepath, media.type, media.lastaccesstime, media.title, media.description, media.category, media.user FROM media LEFT JOIN keywords ON media.mediaid = keywords.mediaid WHERE media.title LIKE '%$srch%' OR media.description LIKE '%$srch%' OR keywords.keyword LIKE '%$srch%'";
 	}
 
 	$result = mysqli_query($con, $query );
@@ -102,26 +84,6 @@ function saveDownload(id)
 	   die ("Could not query the media table in the database: <br />". mysqli_error($con));
 	}
 ?>
-
-    <h3>All Uploaded Media</h3>
-    <h4>Category</h4>
-    <form action="browse.php" method="post">
-  		<select name="type" type="text">
-    		<option value="all">All</option>
-    		<option value="images">Images</option>
-    		<option value="videos">Videos</option>
-    		<option value="audio">Audio</option>
-  		</select>
-  		<input type="submit">
-  	</form>
-  	<h4>Playlist</h4>
-  	<form action="browse.php" method="post">
-  		<select name="playlist" type="text">
-    		<option value="all">All</option>
-    		<option value="favorites">Favorites</option>
-  		</select>
-  		<input type="submit">
-  	</form>
 
     <br/>
     <div class="all_media">
