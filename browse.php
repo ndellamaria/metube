@@ -27,7 +27,12 @@ function saveDownload(id)
 
 <div class="topnav">
   <a class="active" href="browse.php">MeTube</a>
-  <input type="text" placeholder="Search..">
+	<table align="right">
+	<form action="browseFilter.php" method="post">
+		<td><input type="text" placeholder="Search.." name="searchwords"></td>
+		<td><input type="submit" value="Search" name="search"></td>
+</form>
+</table>
   <?php
 	if (! empty($_SESSION['logged_in']))
 	{
@@ -38,6 +43,11 @@ function saveDownload(id)
 		echo"<a href='index.php'>Login</a>";
 		echo"<a href='registration.php'>Register</a>";
 	}
+
+	if(isset($_POST['search'])){
+
+	}
+
   ?>
 </div>
 
