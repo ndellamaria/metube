@@ -5,9 +5,7 @@ include_once "function.php";
 ?>
 
 <head> 
-
 <title>Profile</title>
-
 <link rel="stylesheet" type="text/css" href="default.css" />
 </head>
 
