@@ -30,7 +30,6 @@ function saveDownload(id)
 	<table align="right">
   <form action="browseFilter.php" method="post">
       <td><input type="text" placeholder="Search.." name="searchwords"></td>
-	    <td><input type="submit" value="Search" name="search"></td>
 </form>
 </table>
   <?php

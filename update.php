@@ -12,7 +12,6 @@ include_once "function.php";
 <body>
 <div class="topnav">
   <a class="active" href="browse.php">MeTube</a>
-  <input type="text" placeholder="Search..">
   <?php 
 	if (! empty($_SESSION['logged_in']))
 	{
