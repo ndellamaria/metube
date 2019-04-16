@@ -31,20 +31,40 @@ if(isset($_POST['submit'])) {
 		}
 		else {
 			$username = $_POST['username'];
-			$email = $_POST['email'];
-			$password = $_POST['password'];
-
-			$query = "INSERT INTO users(username, password, email) VALUES ('$username', '$password', '$email')";
+			$query = "SELECT * FROM users WHERE username='$username'";
 			$result = mysqli_query($con, $query);
-
-			if($result){
-				$smsg = "User Created Successfully";
-				$_SESSION['username']=$_POST['username']; //Set the $_SESSION['username']
-				$_SESSION['logged_in']=1;
-				header('Location: browse.php');
+			$row = mysqli_fetch_row($result);
+			if ($row) {
+				$login_error = "That username exists already. Please choose a new one.";
 			}
 			else {
-				$fmsg = "User Registration Failed".mysqli_error($con);
+				$email = $_POST['email'];
+				if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+	  				$login_error = "Invalid email format";
+				}
+				else {
+
+					$password = $_POST['password'];
+					$confirm_password = $_POST['confirm_password'];
+
+					if($password != $confirm_password){
+						$login_error = "Passwords do not match.";
+					}
+					else {
+						$query = "INSERT INTO users(username, password, email) VALUES ('$username', '$password', '$email')";
+						$result = mysqli_query($con, $query);
+
+						if($result){
+							$smsg = "User Created Successfully";
+							$_SESSION['username']=$_POST['username']; //Set the $_SESSION['username']
+							$_SESSION['logged_in']=1;
+							header('Location: browse.php');
+						}
+						else {
+							$fmsg = "User Registration Failed".mysqli_error($con);
+						}
+					}
+				}
 			}
 		}
 }
@@ -60,7 +80,7 @@ if(isset($_POST['submit'])) {
 <table width="100%">
 	<tr>
 		<td  width="20%">Username (max 15 characters):</td>
-		<td width="80%"><input class="text"  maxlength="15" type="text" name="username"><br /></td>
+		<td width="80%"><input class="text"  maxlength="15" type="text" name="username"> *You cannot change your username once it is set<br /></td>
 	</tr>
 	<tr>
 		<td  width="20%">Email:</td>
@@ -69,6 +89,10 @@ if(isset($_POST['submit'])) {
 	<tr>
 		<td  width="20%">Password (max 10 characters):</td>
 		<td width="80%"><input class="text"  maxlength="10" type="password" name="password"><br /></td>
+	</tr>
+	<tr>
+		<td  width="20%">Confirm Password (max 10 characters):</td>
+		<td width="80%"><input class="text"  maxlength="10" type="password" name="confirm_password"><br /></td>
 	</tr>
 	<tr>
     
