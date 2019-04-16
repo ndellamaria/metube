@@ -4,7 +4,7 @@ session_start();
 include_once "function.php";
 ?>
 
-<head> 
+<head>
 <title>Profile</title>
 <link rel="stylesheet" type="text/css" href="default.css" />
 </head>
@@ -12,7 +12,7 @@ include_once "function.php";
 <body>
 <div class="topnav">
   <a class="active" href="browse.php">MeTube</a>
-  <?php 
+  <?php
 	if (! empty($_SESSION['logged_in']))
 	{
   		echo "<a href='logout.php'>Logout</a>
@@ -68,7 +68,7 @@ if(isset($_POST['submit'])) {
 <?php if(isset($smsg)){ ?><div role="alert"> <?php echo $smsg; ?> </div><?php } ?>
 <?php if(isset($fmsg)){ ?><div role="alert"> <?php echo $fmsg; ?> </div><?php } ?>
 
-<?php 
+<?php
 	$_susername = $_SESSION['username'];
 	$query = "select * from users where username='$_susername'";
 	$result = mysqli_query($con, $query);
@@ -91,14 +91,14 @@ if(isset($_POST['submit'])) {
 		<td width="80%"><input class="text"  type="password" name="password" maxlength="15" value="<?php echo $_spassword; ?>"><br /></td>
 	</tr>
 	<tr>
-    
+
 		<td><input name="submit" type="submit" value="Update"><br /></td>
 	</tr>
 </table>
 </form>
 
 <div class="my_contacts">
-	<?php 
+	<?php
 		echo "<h3>Contacts</h3>";
 		$query = "SELECT id FROM users WHERE username='$_susername'";
 		$result = mysqli_query($con, $query);
@@ -111,7 +111,7 @@ if(isset($_POST['submit'])) {
 		if(!$result){
 			echo "fail";
 		}
-		else { 
+		else {
 	?>
 		<table style="width:30%">
 			<tr>
@@ -132,12 +132,12 @@ if(isset($_POST['submit'])) {
 			<tr>
 				<td><?php echo $row[0] ?></td>
 				<td><?php echo $row[1] ?></td>
-				<td><a href="message.php?id=<?php echo $convid;?>" target="_blank"">Message</a></td>
+				<td><a href="message.php?id=<?php echo $convid;?>" target="_blank">Message</a></td>
 			</tr>
 		<?php } ?>
 		</table>
 		<?php } ?>
-		
+
 
 	<?php
     	echo "<p> Click <a href='add_contact.php'>here</a> to add a contact by username.</p>";
@@ -147,37 +147,72 @@ if(isset($_POST['submit'])) {
 <div class="my_uploads">
 	<h3>My Media</h3>
 
-	<?php
-		$query = "SELECT * FROM media INNER JOIN upload ON media.mediaid = upload.mediaid INNER JOIN users ON upload.username = users.username WHERE users.username='$_susername'";
-		$result = mysqli_query($con, $query );
-		if (!$result)
-		{
-		   die ("Could not query the media table in the database: <br />". mysqli_error($con));
-		}
-	?>  
+
+
 
 	<table width="50%" cellpadding="0" cellspacing="0" style="text-align: center">
 		<tr>
 			<th>Title</th>
 			<th>Description</th>
-			<th>Category</th>
+			<th>Category:
+        <form action="update.php" method="post">
+        <select name="type" type="text">
+          <option value="all"  selected="selected">All</option>
+          <option value="images">Images</option>
+          <option value="videos">Videos</option>
+          <option value="audio">Audio</option>
+        </select>
+        <input type="submit" value="Sort" name="change"/>
+      </form>
+      </th>
 			<th></th>
 		</tr>
+
+    <?php
+      $catquery="";
+
+      if(isset($_POST['change'])){
+        $type = $_POST['type'];
+        if($type == 'all'){
+          $catquery = "AND media.category IN ('image', 'video', 'audio')";
+        }
+        else if($type == 'images'){
+          $catquery = "AND media.category = 'image'";
+        }
+        else if($type == 'videos'){
+          $catquery = "AND media.category = 'video'";
+        }
+        else if($type == 'audio'){
+          $catquery = "AND media.category = 'audio'";
+        }
+      }
+
+  		$query = "SELECT * FROM media INNER JOIN upload ON media.mediaid = upload.mediaid INNER JOIN users ON upload.username = users.username WHERE users.username='$_susername' $catquery";
+
+
+      $result = mysqli_query($con, $query );
+  		if (!$result)
+  		{
+  		   die ("Could not query the media table in the database: <br />". mysqli_error($con));
+  		}
+  	?>
+
+
 		<?php
 			while ($result_row = mysqli_fetch_row($result))
-			{ 
+			{
 		?>
-        <tr valign="top">			
+        <tr valign="top">
 			<td>
 					<h4><a href="media.php?id=<?php echo $result_row[0];?>" target="_blank"><?php echo $result_row[5];?></a></h4>
 			</td>
 			<td>
-					<?php 
+					<?php
 						echo $result_row[6];
 					?>
 			</td>
 			<td>
-					<?php 
+					<?php
 						echo $result_row[7];
 					?>
 			</td>
