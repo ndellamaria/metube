@@ -27,37 +27,71 @@ include_once "function.php";
 </body>
 
 <?php
+
+	$_susername = $_SESSION['username'];
+	$query = "select * from users where username='$_susername'";
+	$result = mysqli_query($con, $query);
+	$row = mysqli_fetch_row($result);
+	$_semail = $row[2];
+	$_spassword = $row[3];
+
 if(isset($_POST['submit'])) {
-	if($_POST['username'] == "" || $_POST['email'] == "" || $_POST['password'] == "") {
-		$update_error = "Please fill in fields.";
+	if($_POST['email'] == "") {
+		$update_error = "Please fill in email field.";
 	}
 	else {
-		$username = $_POST['username'];
 		$email = $_POST['email'];
-		$password = $_POST['password'];
-
-		if($username == $_SESSION['username']) {
-			$query = "UPDATE users SET email='$email', password='$password' WHERE username='$username'";
-			$result = mysqli_query($con, $query);
-
-			if($result){
-				$smsg = "User Updated Successfully";
-				$_SESSION['username']=$_POST['username'];
-			}
-			else {
-				$fmsg = "User Update Failed".mysqli_error($con);
-			}
+		$old_password = $_POST['old_password'];
+		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+	  		$update_error = "Invalid email format";
 		}
 		else {
-			$query = "select * from users where username='$username'";
-			$result = mysqli_query($con, $query);
-			$row = mysqli_fetch_row($result);
-			if($row){
-				$update_error = "Sorry, that username is already taken. Please choose a different one.";
+			if($_POST['new_password'] != "") {
+				$new_password = $_POST['new_password'];
+				$confirm_new_password = $_POST['confirm_new_password'];
+
+				if($old_password != $_spassword) {
+					$update_error = "Old password is not correct.";
+				}
+				else {
+					if($new_password != $confirm_new_password){
+						$update_error = "New passwords do not match.";
+					}
+					else {
+						$query = "UPDATE users SET email='$email', password='$new_password' WHERE username='$_susername'";
+						$result = mysqli_query($con, $query);
+
+						if($result){
+							$smsg = "User Updated Successfully";
+						}
+						else {
+							$fmsg = "User Update Failed".mysqli_error($con);
+						}
+					}
+				}
+			}
+			else {
+				if($old_password != $_spassword) {
+					$update_error = "Old password is not correct.";
+				}
+				else {
+					$query = "UPDATE users SET email='$email' WHERE username='$_susername'";
+					$result = mysqli_query($con, $query);
+
+					if($result){
+						$smsg = "User Updated Successfully";
+					}
+					else {
+						$fmsg = "User Update Failed".mysqli_error($con);
+					}
+				}
 			}
 		}
 	}
 }
+  if(isset($update_error))
+   {  echo "<div><h2>".$update_error."</h2></div>";}
+
 
 if(isset($_POST['delete_contact'])) {
 	$_susername = $_SESSION['username'];
@@ -105,29 +139,28 @@ if(isset($_POST['delete_contact'])) {
 <?php if(isset($smsg)){ ?><div role="alert"> <?php echo $smsg; ?> </div><?php } ?>
 <?php if(isset($fmsg)){ ?><div role="alert"> <?php echo $fmsg; ?> </div><?php } ?>
 
-<?php
-	$_susername = $_SESSION['username'];
-	$query = "select * from users where username='$_susername'";
-	$result = mysqli_query($con, $query);
-	$row = mysqli_fetch_row($result);
-	$_semail = $row[2];
-	$_spassword = $row[3];
-?>
-
 <table width="100%">
 	<tr>
-		<td  width="20%">Username (max 15 characters):</td>
-		<td width="80%"><input class="text"  type="text" name="username" maxlength="15" value="<?php echo $_SESSION['username']; ?>"><br /></td>
+		<td  width="20%">Username:</td>
+		<td width="80%"><?php echo $_SESSION['username']; ?><br /></td>
 	</tr>
 	<tr>
 		<td  width="20%">Email:</td>
 		<td width="80%"><input class="text"  type="text" name="email" maxlength="20" value="<?php echo $_semail; ?>"><br /></td>
 	</tr>
 	<tr>
-		<td  width="20%">Password (max 15 characters):</td>
-		<td width="80%"><input class="text"  type="password" name="password" maxlength="15" value="<?php echo $_spassword; ?>"><br /></td>
+		<td  width="20%">Old Password (max 15 characters):</td>
+		<td width="80%"><input class="text"  type="password" name="old_password" maxlength="15" value="<?php echo $_spassword; ?>"><br /></td>
 	</tr>
 	<tr>
+	<tr>
+		<td  width="20%">New Password (max 15 characters):</td>
+		<td width="80%"><input class="text"  type="password" name="new_password" maxlength="15"><br /></td>
+	</tr>
+	<tr>
+		<td  width="20%">Confirm new Password:</td>
+		<td width="80%"><input class="text"  type="password" name="confirm_new_password" maxlength="15"><br /></td>
+	</tr>
 
 		<td><input name="submit" type="submit" value="Update"><br /></td>
 	</tr>
@@ -266,8 +299,3 @@ if(isset($_POST['delete_contact'])) {
 </div>
 
 <form action="browse.php"><input name="home" type="submit" value="Cancel"></form>
-
-<?php
-  if(isset($update_error))
-   {  echo "<div>".$update_error."</div>";}
-?>

@@ -80,7 +80,7 @@ if(isset($_POST['submit'])) {
 <table width="100%">
 	<tr>
 		<td  width="20%">Username (max 15 characters):</td>
-		<td width="80%"><input class="text"  maxlength="15" type="text" name="username"><br /></td>
+		<td width="80%"><input class="text"  maxlength="15" type="text" name="username"> *You cannot change your username once it is set<br /></td>
 	</tr>
 	<tr>
 		<td  width="20%">Email:</td>
