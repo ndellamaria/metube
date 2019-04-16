@@ -17,7 +17,9 @@ function saveDownload(id)
        id: id,
 	},
 	function(message)
-    { }
+    { 
+
+    }
  	);
 }
 </script>
@@ -261,7 +263,7 @@ function saveDownload(id)
 						<input type="submit" value="submit">
 					</form></div>
 			<?php } ?>
-			<a href="<?php echo $result_row[2].$result_row[1];?>" target="_blank" onclick="javascript:saveDownload(<?php echo $result_row[0];?>);">Download</a>
+			<a href="<?php echo "media_download_process.php?id=".$result_row[0];?>" target="_blank" onclick="javascript:saveDownload(<?php echo $result_row[0];?>);">Download</a>
 		</div>
 		<?php } ?>
 	</div>
