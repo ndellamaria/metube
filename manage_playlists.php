@@ -51,8 +51,15 @@
 
 <?php
 	$user = $_GET['user'];
+
 	$query = "SELECT playlist FROM user_playlists WHERE username='$user'";
 	$result = mysqli_query($con, $query);
+	$count = mysqli_num_rows($result);
+
+	if ($count < 1){
+		echo "You have no playlists.";
+	}
+
 	while($row = mysqli_fetch_row($result)){ 
 		$playlistname = $row[0]; ?>
 		<table>

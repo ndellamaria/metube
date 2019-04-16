@@ -49,16 +49,11 @@ if(isset($_POST['submit'])) {
 			}	
 			else if($check==0){
 				echo "Contact created successfully";
-				echo $username;
-				echo $contactname;
 				$query = "INSERT INTO conversations(userA, userB) VALUES('$username', '$contactname')";
 				$result = mysqli_query($con, $query);
 				if (!$result){
 					echo "error";
 					echo mysqli_error($con);
-				}
-				else {
-					echo "success";
 				}
 			}
 		}

@@ -66,57 +66,125 @@ function saveDownload(id)
 		{
 			echo upload_error($_REQUEST['result']);
 		}
+		if(isset($_POST['delchannel'])) {
+			$channelname = $_POST['delchannel'];
+			$query = "DELETE FROM channels WHERE user='$username' AND channel='$channelname'";
+			$result = mysqli_query($con, $query );
+			if(!$result){
+				echo mysqli_error($con);
+			}
+		}
 		?>
 		</div>
-		<h3>Add new playlist</h3>
-		<form action="browse.php" method="post">
-			<input name="new_playlist" type="text" placeholder="new playlist..." maxlength="20"> 
-			<input type="submit" value="submit">
-		</form>
-		<h4><a href="manage_playlists.php?user=<?php echo $username;?>" target="_blank">Manage Playlists</a></h4>
+		<div class="sort">
+			<div>
+			<h3>Add new playlist</h3>
+			<form action="browse.php" method="post">
+				<input name="new_playlist" type="text" placeholder="new playlist..." maxlength="20"> 
+				<input type="submit" value="submit">
+			</form>
+			<h4><a href="manage_playlists.php?user=<?php echo $username;?>" target="_blank">Manage Playlists</a></h4>
+			</div>
+			<div>
+			<h3>Add new channel</h3>
+				<form action="browse.php" method="post">
+					 <?php 
+						$query = "select username from users where username != '$username' and username not in (select channel from channels where user='$username')";
+						$channels_result = mysqli_query($con, $query); 
+						if(!$channels_result){
+							echo mysqli_error($con);
+						}
+
+						?>
+						<select name="new_channel">
+							<?php while ($channel_row = mysqli_fetch_row($channels_result)){ ?>
+							<option value="<?php echo $channel_row[0]; ?>"> <?php echo $channel_row[0]; ?> </option><br>;
+							<?php } ?>
+						</select>
+					<input type="submit" value="submit">
+				</form>
+			</div>
+			<div>
+				<h3>My Channels</h3>
+				<?php 
+				$q = "SELECT channel FROM channels WHERE user='$username'";
+				$r = mysqli_query($con, $q);
+				?><table><?php
+				while ($channel_row = mysqli_fetch_row($r)){ ?>
+					<tr>
+						<td><?php echo $channel_row[0]; ?></td>
+						<td><form action="browse.php" method="post">
+						<input type="hidden" name="delchannel" value="<?php echo $channel_row[0]; ?>">
+						<input type="submit" value="Delete">
+					</form></td>
+					</tr>
+				<?php }
+
+				?>
+				</table>
+			</div>
+		</div>
 		<?php }
 		else {
 			echo "<p>Please login to upload media.</p>";
 		}
 		?>
-<br/><br/>
-
 <?php
-	if(isset($_POST['type'])) {
-		$type = $_POST['type'];
-		if($type == 'all'){
-			$type_query = "category IN ('image','video','audio')";
+	if (isset($_POST['channel'])) {
+		$channel = $_POST['channel'];
+		if ($channel == "all"){
+			$channel_query = "SELECT mediaid FROM media";
 		}
-		else if($type == 'images') {
-			$type_query = "category='image'";
+		else if ($channel == "mine"){
+			$channel_query = "SELECT mediaid FROM media WHERE user='$username'";
 		}
-		else if($type == 'videos'){
-			$type_query = "category='video'";
-		}
-		else if($type == 'audio'){
-			$type_query = "category='audio'";
-		}
-		else{
-			$type_query = "category IN ('image','video','audio')";
+		else {
+			$channel_query = "SELECT mediaid FROM media WHERE user='$channel'";
 		}
 	}
 	else {
-		$type_query = "category IN ('image','video','audio')";
+		$channel_query = "SELECT mediaid FROM media";
+	}
+	if(isset($_POST['type'])) {
+		$type = $_POST['type'];
+		if($type == 'all'){
+			$type_query = "SELECT mediaid FROM media";
+		}
+		else if($type == 'images') {
+			$type_query = "SELECT mediaid FROM media WHERE category='image'";
+		}
+		else if($type == 'videos'){
+			$type_query = "SELECT mediaid FROM media WHERE category='video'";
+		}
+		else if($type == 'audio'){
+			$type_query = "SELECT mediaid FROM media WHERE category='audio'";
+		}
+		else{
+			$type_query = "SELECT mediaid FROM media";
+		}
+	}
+	else {
+		$type_query = "SELECT mediaid FROM media";
 	}
 
 	if(isset($_POST['playlist'])){
 		$playlist = $_POST['playlist'];
 		if($playlist == 'all'){
-			$playlist_query = "SELECT * from media WHERE ".$type_query;
+			$playlist_query = "SELECT mediaid from media";
 		}
 		else {
-			$playlist_query = "SELECT * FROM media INNER JOIN playlists ON media.mediaid=playlists.mediaid WHERE playlists.playlist='$playlist' AND username='$username' AND ".$type_query;
+			$playlist_query = "SELECT media.mediaid FROM media INNER JOIN playlists ON media.mediaid=playlists.mediaid WHERE playlists.playlist='$playlist' AND username='$username'";
 		}
 	}
 	else{
-		$playlist_query = "SELECT * from media WHERE ".$type_query;
+		$playlist_query = "SELECT mediaid from media";
 	}
-	$result = mysqli_query($con, $playlist_query);
+	$bigq = "SELECT media.mediaid FROM media WHERE media.mediaid in ($channel_query) AND media.mediaid in ($type_query) AND media.mediaid in ($playlist_query)";
+	$allq = "SELECT * FROM media WHERE media.mediaid IN ($bigq)";
+	$result = mysqli_query($con, $allq);
+	if(!$result){
+		echo mysqli_error($con);
+	}
 ?>
    
 <?php
@@ -159,13 +227,26 @@ function saveDownload(id)
 			echo 'This media is already part of that playlist';
 		}
 	}
+	if(isset($_POST['new_channel'])){
+		$new_channel = $_POST['new_channel'];
+		$query = "INSERT into channels(user, channel) VALUES('$username','$new_channel')";
+		$channel_result = mysqli_query($con, $query);
+		if(!$channel_result){
+			echo mysqli_error($con);
+		}
+		?>
+		<meta http-equiv="refresh" content="0;url=browse.php">
+		<?php
+	}
+
 ?>
     <h3>Filters</h3>
     <table>
     <tr>
     	<th><h4>Category</h4></th>
     	<?php if (! empty($_SESSION['logged_in'])) { ?>
-			<th><h4>Playlist</h4></th> <?php } ?>
+			<th><h4>Playlist</h4></th>
+			<th><h4>Channel</h4></th> <?php } ?>
     	<th></th>
     </tr>
     <tr>
@@ -194,6 +275,20 @@ function saveDownload(id)
 			<?php } ?>
 				</select>
 		</td>
+		<td>
+		  	<form action="browse.php" method="post">
+		  <?php 
+			$query = "SELECT channel FROM channels where user='$username'";
+			$channel_result = mysqli_query($con, $query); ?>
+				<select name="channel">
+					<option value="all" selected="selected">Any</option>
+					<option value="mine">My Channel</option>
+				<?php while ($channel_row = mysqli_fetch_row($channel_result)){ ?>
+					<option value="<?php echo $channel_row[0]; ?>"> <?php echo $channel_row[0]; ?> </option><br>;
+			<?php } ?>
+				</select>
+		</td>
+
 	<?php } ?>
 		<td><input type="submit" value="submit"></td>
 		</form>
@@ -264,6 +359,7 @@ function saveDownload(id)
 					</form></div>
 			<?php } ?>
 			<a href="<?php echo "media_download_process.php?id=".$result_row[0];?>" target="_blank" onclick="javascript:saveDownload(<?php echo $result_row[0];?>);">Download</a>
+			<a href="<?php echo $result_row[2].$result_row[1];?>" target="_blank" onclick="javascript:saveDownload(<?php echo $result_row[0];?>);">View</a>
 		</div>
 		<?php } ?>
 	</div>

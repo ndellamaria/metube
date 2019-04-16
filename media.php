@@ -56,6 +56,11 @@ if(isset($_POST['submit'])){
 		$fmsg = "Comment Failed".mysqli_error($con);
 	}
 }
+if(isset($_POST['delete_comment'])){
+	$commentid = $_POST['delete_comment'];
+	$res = mysqli_query($con, "DELETE FROM comments WHERE id = '$commentid'");
+}
+
 
 ?>
 
@@ -102,7 +107,18 @@ if(isset($_POST['submit'])){
 			<tr>
 				<td><?php echo $row[1] ?></td>
 				<td><?php echo $row[3] ?></td>
+			<?php if (! empty($_SESSION['logged_in']))
+			{
+				if($_SESSION['username'] == $row[1]){ 
+					$mediapath="media.php?id=".$_GET["id"]; ?>
+					<td><form action=<?php echo $mediapath ?> method="post">
+						<input type="hidden" name="delete_comment" value="<?php echo $row[0]; ?>">
+						<input type="submit" value="Delete">
+					</form></td>
+				<?php }
+			} ?>
 			</tr>
+
 			<?php } ?>
 			<?php 
 				if (! empty($_SESSION['logged_in']))

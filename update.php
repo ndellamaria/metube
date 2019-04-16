@@ -59,6 +59,43 @@ if(isset($_POST['submit'])) {
 	}
 }
 
+if(isset($_POST['delete_contact'])) {
+	$_susername = $_SESSION['username'];
+	$delusername = $_POST['delete_contact'];
+	$res = mysqli_query($con, "SELECT conversationID FROM conversations WHERE (userA='$_susername' AND userB='$delusername') OR (userB='$_susername' AND userA='$delusername')");
+	$convIDrow = mysqli_fetch_row($res);
+	$convID_del = (int)$convIDrow[0];
+	$query = "SELECT id FROM users WHERE username='$_susername'";
+	$result = mysqli_query($con, $query);
+	$row = mysqli_fetch_row($result);
+	$userid = (int)$row[0];
+	$query = "SELECT id FROM users WHERE username='$delusername'";
+	$result = mysqli_query($con, $query);
+	$row = mysqli_fetch_row($result);
+	$contactid = (int)$row[0];
+
+	$sql = "DELETE FROM conversations WHERE conversationID='$convID_del'";
+	$res = mysqli_query($con,$sql);
+	if(!$res){
+		echo mysqli_error($con);
+	}
+	$sql = "DELETE FROM messages WHERE convID='$convID_del'";
+	$res = mysqli_query($con,$sql);
+	if(!$res){
+		echo mysqli_error($con);
+	}
+	$sql = "DELETE FROM user_contact WHERE userid='$userid' AND contactid='$contactid'";
+	$res = mysqli_query($con,$sql);
+	if(!$res){
+		echo mysqli_error($con);
+	}
+	$sql = "DELETE FROM user_contact WHERE contactid='$userid' AND userid='$contactid'";
+	$res = mysqli_query($con,$sql);
+	if(!$res){
+		echo mysqli_error($con);
+	}
+}
+
 ?>
 
 <h1>My Profile</h1>
@@ -133,6 +170,10 @@ if(isset($_POST['submit'])) {
 				<td><?php echo $row[0] ?></td>
 				<td><?php echo $row[1] ?></td>
 				<td><a href="message.php?id=<?php echo $convid;?>" target="_blank">Message</a></td>
+				<td><form action="update.php" method="post">
+						<input type="hidden" name="delete_contact" value="<?php echo $row[0]; ?>">
+						<input type="submit" value="Delete">
+					</form></td>
 			</tr>
 		<?php } ?>
 		</table>
