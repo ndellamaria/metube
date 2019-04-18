@@ -2,7 +2,7 @@
 <?php
 	session_start();
 	include_once "function.php";
-?>	
+?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -12,14 +12,15 @@
 <link rel="stylesheet" type="text/css" href="default.css" />
 </head>
 
-<?php 
+<?php
 	$username = $_SESSION['username'];
 	if(isset($_POST['playlistname'])) {
 		$playlistname = $_POST['playlistname'];
+
 		$query = "DELETE FROM user_playlists WHERE playlist='$playlistname' AND username='$username'";
 		$result = mysqli_query($con, $query );
 
-		$query = "DELETE FROM playlists WHERE playlistname='$playlistname' AND username='$username'";
+		$query = "DELETE FROM playlists WHERE playlist='$playlistname' AND username='$username'";
 		$result = mysqli_query($con, $query );
 	}
 	if(isset($_POST['mediaid'])) {
@@ -36,7 +37,7 @@
 <body>
 <div class="topnav">
   <a class="active" href="browse.php">MeTube</a>
-  <?php 
+  <?php
 	if (! empty($_SESSION['logged_in']))
 	{
   		echo "<a href='logout.php'>Logout</a>
@@ -60,7 +61,7 @@
 		echo "You have no playlists.";
 	}
 
-	while($row = mysqli_fetch_row($result)){ 
+	while($row = mysqli_fetch_row($result)){
 		$playlistname = $row[0]; ?>
 		<table>
 			<tr>
@@ -73,13 +74,13 @@
 					</form><br>
 				</th>
 			</tr>
-			<?php 
+			<?php
 				$query = "SELECT media.mediaid, title FROM media INNER JOIN playlists ON media.mediaid=playlists.mediaid WHERE playlists.username='$username' AND playlists.playlist='$playlistname'";
 				$titles = mysqli_query($con, $query);
 				if(!$titles){
 					echo mysqli_error($con);
 				}
-				while($title = mysqli_fetch_row($titles)) { 
+				while($title = mysqli_fetch_row($titles)) {
 					$mediaid = $title[0]; ?>
 					<tr>
 						<td><?php echo $title[1]; ?></td>
